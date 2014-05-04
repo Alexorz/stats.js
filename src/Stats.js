@@ -7,16 +7,18 @@ var Stats = function () {
 	var startTime = Date.now(), prevTime = startTime;
 	var ms = 0, msMin = Infinity, msMax = 0;
 	var fps = 0, fpsMin = Infinity, fpsMax = 0;
-	var frames = 0, mode = 0;
+	var frames = 0, mode = 1;
 
 	var container = document.createElement( 'div' );
 	container.id = 'stats';
-	container.addEventListener( 'mousedown', function ( event ) { event.preventDefault(); setMode( ++ mode % 2 ) }, false );
+	// container.addEventListener( 'mousedown', function ( event ) { event.preventDefault(); setMode( ++ mode % 2 ) }, false );
+	container.addEventListener( 'mousedown', function ( event ) { event.preventDefault(); clear() }, false );
+
 	container.style.cssText = 'width:80px;opacity:0.9;cursor:pointer';
 
 	var fpsDiv = document.createElement( 'div' );
 	fpsDiv.id = 'fps';
-	fpsDiv.style.cssText = 'padding:0 0 3px 3px;text-align:left;background-color:#002';
+	fpsDiv.style.cssText = 'padding:0 0 3px 3px;text-align:left;background-color:#002;display:none';
 	container.appendChild( fpsDiv );
 
 	var fpsText = document.createElement( 'div' );
@@ -40,7 +42,7 @@ var Stats = function () {
 
 	var msDiv = document.createElement( 'div' );
 	msDiv.id = 'ms';
-	msDiv.style.cssText = 'padding:0 0 3px 3px;text-align:left;background-color:#020;display:none';
+	msDiv.style.cssText = 'padding:0 0 3px 3px;text-align:left;background-color:#020;';
 	container.appendChild( msDiv );
 
 	var msText = document.createElement( 'div' );
@@ -80,6 +82,13 @@ var Stats = function () {
 
 	}
 
+	var clear = function(){
+		msMin = Infinity;
+		msMax = 0;
+		fpsMin = Infinity;
+		fpsMax = 0;
+	};
+
 	var updateGraph = function ( dom, value ) {
 
 		var child = dom.appendChild( dom.firstChild );
@@ -94,6 +103,8 @@ var Stats = function () {
 		domElement: container,
 
 		setMode: setMode,
+
+		clear: clear,
 
 		begin: function () {
 
@@ -141,3 +152,51 @@ var Stats = function () {
 	}
 
 };
+
+
+// requestAnimationFrame polyfill by Erik M枚ller
+// fixes from Paul Irish and Tino Zijdel
+(function() {
+    var lastTime = 0;
+    var vendors = ['ms', 'moz', 'webkit', 'o'];
+    for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+        window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
+        window.cancelAnimationFrame = window[vendors[x]+'CancelAnimationFrame']
+                                   || window[vendors[x]+'CancelRequestAnimationFrame'];
+    }
+
+    if (!window.requestAnimationFrame)
+        window.requestAnimationFrame = function(callback, element) {
+            var currTime = new Date().getTime();
+            var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+            var id = window.setTimeout(function() { callback(currTime + timeToCall); },
+              timeToCall);
+            lastTime = currTime + timeToCall;
+            return id;
+        };
+
+    if (!window.cancelAnimationFrame)
+        window.cancelAnimationFrame = function(id) {
+            clearTimeout(id);
+        };
+}());
+
+// Deploy Stats.js
+;(function(){
+	var stats = new Stats();
+	stats.domElement.style.position = 'fixed';
+	stats.domElement.style.width = '80px';
+	stats.domElement.style.left = '0px';
+	stats.domElement.style.top = '0px';
+    stats.domElement.style.whiteSpace = 'nowrap';
+	stats.domElement.style.zIndex = 99999;
+	document.body.appendChild( stats.domElement );
+
+	function loop() {
+	    requestAnimationFrame(loop);
+	    if (stats) {
+	        stats.update();
+	    }
+	}
+	loop();
+})();
