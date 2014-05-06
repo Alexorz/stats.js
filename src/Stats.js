@@ -13,6 +13,7 @@ var Stats = function () {
 	container.id = 'stats';
 	// container.addEventListener( 'mousedown', function ( event ) { event.preventDefault(); setMode( ++ mode % 2 ) }, false );
 	container.addEventListener( 'mousedown', function ( event ) { event.preventDefault(); clear() }, false );
+	container.addEventListener( 'touchstart', function ( event ) { event.preventDefault(); clear() }, false );
 
 	container.style.cssText = 'width:80px;opacity:0.9;cursor:pointer';
 
