@@ -7,7 +7,7 @@ var Stats = function () {
 	var startTime = Date.now(), prevTime = startTime;
 	var ms = 0, msMin = Infinity, msMax = 0;
 	var fps = 0, fpsMin = Infinity, fpsMax = 0;
-	var frames = 0, mode = 1;
+	var frames = 0, mode = 0;
 
 	var container = document.createElement( 'div' );
 	container.id = 'stats';
@@ -19,7 +19,7 @@ var Stats = function () {
 
 	var fpsDiv = document.createElement( 'div' );
 	fpsDiv.id = 'fps';
-	fpsDiv.style.cssText = 'padding:0 0 3px 3px;text-align:left;background-color:#002;display:none';
+	fpsDiv.style.cssText = 'padding:0 0 3px 3px;text-align:left;background-color:#002;';
 	container.appendChild( fpsDiv );
 
 	var fpsText = document.createElement( 'div' );
@@ -155,7 +155,7 @@ var Stats = function () {
 };
 
 
-// requestAnimationFrame polyfill by Erik M枚ller
+// requestAnimationFrame polyfill by Erik Muller
 // fixes from Paul Irish and Tino Zijdel
 (function() {
     var lastTime = 0;
@@ -184,20 +184,35 @@ var Stats = function () {
 
 // Deploy Stats.js
 ;(function(){
-	var stats = new Stats();
-	stats.domElement.style.position = 'fixed';
-	stats.domElement.style.width = '80px';
-	stats.domElement.style.left = '0px';
-	stats.domElement.style.top = '0px';
-    stats.domElement.style.whiteSpace = 'nowrap';
-	stats.domElement.style.zIndex = 99999;
-	document.body.appendChild( stats.domElement );
+	var stats1 = new Stats();
+	stats1.domElement.style.position = 'fixed';
+	stats1.domElement.style.width = '80px';
+	stats1.domElement.style.left = '0px';
+	stats1.domElement.style.top = '0px';
+    stats1.domElement.style.whiteSpace = 'nowrap';
+	stats1.domElement.style.zIndex = 99999;
+	document.body.appendChild( stats1.domElement );
 
 	function loop() {
 	    requestAnimationFrame(loop);
-	    if (stats) {
-	        stats.update();
+	    if (stats1) {
+	        stats1.update();
 	    }
 	}
 	loop();
+
+	// var stats2 = new Stats();
+	// stats2.domElement.style.position = 'fixed';
+	// stats2.domElement.style.width = '80px';
+	// stats2.domElement.style.left = '0px';
+	// stats2.domElement.style.top = '48px';
+ //    stats2.domElement.style.whiteSpace = 'nowrap';
+	// stats2.domElement.style.zIndex = 99999;
+	// document.body.appendChild( stats2.domElement );
+
+	// setInterval(function(){
+	//     if (stats2) {
+	//         stats2.update();
+	//     }
+	// }, 100/6);
 })();
